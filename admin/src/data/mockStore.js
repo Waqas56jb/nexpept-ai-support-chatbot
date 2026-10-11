@@ -17,7 +17,8 @@ function defaultSettings() {
     agentName: 'NexPept Support',
     agentAvatar:
       'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=200&h=200&fit=crop&crop=faces',
-    whatsappUrl: 'https://wa.me/16472606806',
+    whatsappUrl:
+      'https://wa.me/16472606806?text=Hi%20NexPept%2C%20I%20have%20a%20question',
     instagramUrl: 'https://www.instagram.com/official.nexpept/',
     connectionStatus: 'link_only',
     aiEnabledDefault: true,
@@ -98,7 +99,7 @@ function seedState() {
       type: 'whatsapp',
       label: 'WhatsApp',
       enabled: true,
-      url: 'https://wa.me/16472606806',
+      url: 'https://wa.me/16472606806?text=Hi%20NexPept%2C%20I%20have%20a%20question',
       connectionStatus: 'link_only',
       updatedAt: iso(-86400000),
     },

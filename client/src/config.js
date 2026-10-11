@@ -13,7 +13,8 @@ export const chatbotConfig = {
   headerTitle: 'Our team is here for you',
   agentName: 'NexPept Support',
   agentAvatar: '/logo.png',
-  whatsappUrl: 'https://wa.me/16472606806',
+  whatsappUrl:
+    'https://wa.me/16472606806?text=Hi%20NexPept%2C%20I%20have%20a%20question',
   faqs: [
     {
       id: 'coa',
