@@ -439,11 +439,13 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
               <>
                 <div className="np-card">
                   <div className="np-card__row">
-                    <img
-                      className="np-card__avatar"
-                      src={widgetConfig.agentAvatar}
-                      alt={widgetConfig.agentName}
-                    />
+                    <div className="np-card__avatar-wrap">
+                      <img
+                        className="np-card__avatar"
+                        src={widgetConfig.agentAvatar}
+                        alt={widgetConfig.agentName}
+                      />
+                    </div>
                     <span className="np-online">
                       <span className="np-online__dot" />
                       ONLINE
@@ -644,11 +646,13 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
                         className={`np-msg-row ${isUser ? 'is-user' : 'is-bot'}`}
                       >
                         {!isUser && (
-                          <img
-                            className="np-msg-avatar"
-                            src={widgetConfig.agentAvatar}
-                            alt=""
-                          />
+                          <div className="np-msg-avatar-wrap">
+                            <img
+                              className="np-msg-avatar"
+                              src={widgetConfig.agentAvatar}
+                              alt=""
+                            />
+                          </div>
                         )}
                         <div className="np-msg-stack">
                           {!isUser && (
@@ -671,11 +675,13 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
 
                   {sending && (
                     <div className="np-msg-row is-bot" aria-live="polite">
-                      <img
-                        className="np-msg-avatar"
-                        src={widgetConfig.agentAvatar}
-                        alt=""
-                      />
+                      <div className="np-msg-avatar-wrap">
+                        <img
+                          className="np-msg-avatar"
+                          src={widgetConfig.agentAvatar}
+                          alt=""
+                        />
+                      </div>
                       <div className="np-msg-stack">
                         <span className="np-msg-label">
                           {widgetConfig.agentName || 'NexPept Support'}
