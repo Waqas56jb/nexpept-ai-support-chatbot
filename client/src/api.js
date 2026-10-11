@@ -1,6 +1,12 @@
-const envBase = import.meta.env.VITE_API_BASE_URL
-const API_BASE_URL =
-  typeof envBase === 'string' && envBase.length > 0 ? envBase.replace(/\/$/, '') : ''
+/** Production API — hardcoded (no Vite .env required). */
+export const API_BASE_URL =
+  'https://nexpept-ai-support-chatbot-server.vercel.app/api'
+
+export const APP_URLS = {
+  admin: 'https://nexpept-ai-support-chatbot-admin.vercel.app',
+  client: 'https://nexpept-ai-support-chatbot.vercel.app',
+  server: 'https://nexpept-ai-support-chatbot-server.vercel.app',
+}
 
 async function chatFetch(path, init = {}) {
   const url = `${API_BASE_URL}${path}`

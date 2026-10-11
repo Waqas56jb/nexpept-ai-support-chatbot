@@ -1,11 +1,15 @@
-const envBase = import.meta.env.VITE_API_BASE_URL
+/** Production API — hardcoded (no Vite .env required). */
 export const API_BASE_URL =
-  typeof envBase === 'string' && envBase.length > 0 ? envBase.replace(/\/$/, '') : ''
+  'https://nexpept-ai-support-chatbot-server.vercel.app/api'
 
-/** When true, services use the in-memory mock store instead of HTTP. */
-export const USE_MOCK =
-  import.meta.env.VITE_USE_MOCK !== 'false' &&
-  import.meta.env.VITE_USE_MOCK !== '0'
+export const APP_URLS = {
+  admin: 'https://nexpept-ai-support-chatbot-admin.vercel.app',
+  client: 'https://nexpept-ai-support-chatbot.vercel.app',
+  server: 'https://nexpept-ai-support-chatbot-server.vercel.app',
+}
+
+/** Always use the live API (mock store disabled). */
+export const USE_MOCK = false
 
 export const ADMIN_USER_STORAGE_KEY = 'nexpept_admin_user'
 

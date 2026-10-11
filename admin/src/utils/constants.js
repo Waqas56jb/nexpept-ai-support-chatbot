@@ -1,3 +1,10 @@
+/** Deployed app URLs (hardcoded — no .env). */
+export const APP_URLS = {
+  admin: 'https://nexpept-ai-support-chatbot-admin.vercel.app',
+  client: 'https://nexpept-ai-support-chatbot.vercel.app',
+  server: 'https://nexpept-ai-support-chatbot-server.vercel.app',
+}
+
 export const CONVERSATION_STATUSES = [
   'open',
   'ai_handling',

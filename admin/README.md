@@ -1,6 +1,10 @@
 # NexPept Admin
 
-React admin panel for the NexPept AI support chatbot. Uses an in-memory mock store by default (`VITE_USE_MOCK=true`).
+React admin panel for the NexPept AI support chatbot.
+
+**Live:** [nexpept-ai-support-chatbot-admin.vercel.app](https://nexpept-ai-support-chatbot-admin.vercel.app/)
+
+API is hardcoded to `https://nexpept-ai-support-chatbot-server.vercel.app/api` (no `.env` needed).
 
 ## Run locally
 
@@ -10,21 +14,20 @@ npm install
 npm run dev
 ```
 
-Open the URL shown in the terminal (typically `http://localhost:5173`).
+## Login
 
-## Mock login
-
-| Field    | Value              |
-| -------- | ------------------ |
+| Field    | Value               |
+| -------- | ------------------- |
 | Email    | `alex@nexpept.demo` |
-| Password | `Demo@123`         |
+| Password | `Demo@123`          |
 
-## Environment
+## Related URLs
 
-Copy `.env.example` to `.env` if you need to override defaults:
-
-- `VITE_USE_MOCK=true` — use mock data (default when unset)
-- `VITE_API_BASE_URL` — reserved for a future real API
+| App    | URL |
+| ------ | --- |
+| Admin  | https://nexpept-ai-support-chatbot-admin.vercel.app |
+| Client | https://nexpept-ai-support-chatbot.vercel.app |
+| Server | https://nexpept-ai-support-chatbot-server.vercel.app |
 
 ## Build
 
