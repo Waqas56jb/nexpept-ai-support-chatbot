@@ -50,10 +50,9 @@
 
 .np-widget-disabled img {
   object-fit: contain;
-  background: #fff;
+  background: transparent;
   border-radius: 16px;
-  padding: 8px;
-  box-shadow: 0 8px 24px rgba(10, 90, 207, 0.18);
+  padding: 4px;
 }
 
 .np-widget-disabled h2 {
@@ -121,7 +120,7 @@
   height: 46px;
   border-radius: 50%;
   overflow: hidden;
-  background: #fff;
+  background: transparent;
   flex-shrink: 0;
 }
 
@@ -129,12 +128,11 @@
   width: 100%;
   height: 100%;
   border-radius: 0;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
-  background: #fff;
-  padding: 0;
+  background: transparent;
+  padding: 4px;
   box-sizing: border-box;
-  transform: scale(1.55);
   display: block;
 }
 
@@ -186,8 +184,8 @@
   height: 58px;
   border: 2px solid var(--np-brand);
   border-radius: 50%;
-  background: #fff;
-  padding: 0;
+  background: transparent;
+  padding: 6px;
   overflow: hidden;
   display: grid;
   place-items: center;
@@ -209,9 +207,8 @@
 .np-launcher__logo {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
-  transform: scale(1.55);
   display: block;
 }
 
@@ -302,7 +299,7 @@
   height: 44px;
   border-radius: 50%;
   overflow: hidden;
-  background: #fff;
+  background: transparent;
   flex-shrink: 0;
   border: 1px solid var(--np-brand-tint);
 }
@@ -311,9 +308,11 @@
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
-  transform: scale(1.55);
+  padding: 5px;
+  box-sizing: border-box;
+  background: transparent;
 }
 
 .np-online {
@@ -782,7 +781,7 @@
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  background: #fff;
+  background: transparent;
   box-shadow: 0 2px 8px rgba(10, 90, 207, 0.12);
   border: 1px solid var(--np-brand-tint);
 }
@@ -791,9 +790,11 @@
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
-  transform: scale(1.55);
+  padding: 3px;
+  box-sizing: border-box;
+  background: transparent;
 }
 
 .np-msg-stack {
