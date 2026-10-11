@@ -196,6 +196,20 @@
   opacity: 0.85;
 }
 
+.embed-code {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border: 1px solid #1e293b;
+}
+
 .admin-brand__text {
   display: flex;
   flex-direction: column;

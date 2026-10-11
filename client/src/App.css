@@ -1,3 +1,31 @@
+html.np-embed,
+body.np-embed {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  overflow: hidden !important;
+  min-height: 100% !important;
+}
+
+body.np-embed #root {
+  background: transparent !important;
+  min-height: 100%;
+}
+
+.embed-root {
+  width: 100%;
+  height: 100vh;
+  min-height: 100%;
+  background: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.embed-root .np-chat-root {
+  right: 12px;
+  bottom: 12px;
+}
+
 .demo-page {
   min-height: 100vh;
   display: grid;

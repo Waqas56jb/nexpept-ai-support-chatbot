@@ -85,6 +85,34 @@ export default function ChatbotSettingsPage() {
           </button>
         </div>
 
+        <div className="page-card" style={{ padding: 16 }}>
+          <h2 className="section-title">WordPress / website embed</h2>
+          <p className="widget-power-card__hint" style={{ marginBottom: 12, maxWidth: 'none' }}>
+            Paste this script before <code>&lt;/body&gt;</code> (Appearance → Theme File Editor →
+            footer.php, or a custom HTML block / WPCode snippet).
+          </p>
+          <pre className="embed-code" tabIndex={0}>
+            {`<script src="https://nexpept-ai-support-chatbot.vercel.app/embed.js" async></script>`}
+          </pre>
+          <button
+            type="button"
+            className="btn secondary"
+            style={{ marginTop: 10 }}
+            onClick={async () => {
+              const code =
+                '<script src="https://nexpept-ai-support-chatbot.vercel.app/embed.js" async></script>'
+              try {
+                await navigator.clipboard.writeText(code)
+                toast.success('Embed script copied')
+              } catch {
+                toast.error('Copy failed — select the code manually')
+              }
+            }}
+          >
+            Copy embed script
+          </button>
+        </div>
+
         <form className="page-card" style={{ padding: 16 }} onSubmit={handleSubmit}>
           <h2 className="section-title">Widget appearance</h2>
           <div className="field">
