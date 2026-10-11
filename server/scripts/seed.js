@@ -102,14 +102,6 @@ async function main() {
         url: 'https://wa.me/16472606806',
         connectionStatus: 'link_only',
       },
-      {
-        id: 'ch_instagram',
-        type: 'instagram',
-        label: 'Instagram',
-        enabled: true,
-        url: 'https://www.instagram.com/official.nexpept/',
-        connectionStatus: 'link_only',
-      },
     ]
 
     const theme = {
@@ -118,7 +110,6 @@ async function main() {
       widgetEnabled: true,
       businessHours: { timezone: 'America/Toronto', start: '09:00', end: '17:00' },
       whatsappUrl: 'https://wa.me/16472606806',
-      instagramUrl: 'https://www.instagram.com/official.nexpept/',
       connectionStatus: 'link_only',
     }
 

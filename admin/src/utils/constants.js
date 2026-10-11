@@ -23,12 +23,12 @@ export const STATUS_LABELS = {
   resolved: 'Resolved',
 }
 
-export const CHANNEL_TYPES = ['website', 'whatsapp', 'instagram']
+export const CHANNEL_TYPES = ['website', 'whatsapp']
 
 export const CHANNEL_LABELS = {
   website: 'Website chat',
   whatsapp: 'WhatsApp',
-  instagram: 'Instagram',
+  instagram: 'Instagram', // legacy rows only
 }
 
 export const MESSAGE_VISIBILITY = ['public', 'internal']

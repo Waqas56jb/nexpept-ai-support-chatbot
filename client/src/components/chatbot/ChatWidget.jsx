@@ -45,25 +45,6 @@ function WhatsAppIcon() {
   )
 }
 
-function InstagramIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <defs>
-        <radialGradient id="npIg" cx="30%" cy="107%" r="150%">
-          <stop offset="0%" stopColor="#fdf497" />
-          <stop offset="5%" stopColor="#fdf497" />
-          <stop offset="45%" stopColor="#fd5949" />
-          <stop offset="60%" stopColor="#d6249f" />
-          <stop offset="90%" stopColor="#285AEB" />
-        </radialGradient>
-      </defs>
-      <rect x="2" y="2" width="20" height="20" rx="6" fill="url(#npIg)" />
-      <circle cx="12" cy="12" r="4.2" fill="none" stroke="#fff" strokeWidth="1.8" />
-      <circle cx="17.2" cy="6.8" r="1.2" fill="#fff" />
-    </svg>
-  )
-}
-
 export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
   const isPage = mode === 'page'
   const [open, setOpen] = useState(isPage)
@@ -131,7 +112,7 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
             agentName: settings.agentName ?? prev.agentName,
             agentAvatar: '/logo.png',
             whatsappUrl: settings.whatsappUrl ?? prev.whatsappUrl,
-            instagramUrl: settings.instagramUrl ?? prev.instagramUrl,
+            channels: (prev.channels || []).filter((c) => c.type === 'whatsapp'),
           }))
         }
       } finally {
@@ -242,9 +223,13 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
   const channelMap = useMemo(
     () => ({
       whatsapp: widgetConfig.whatsappUrl,
-      instagram: widgetConfig.instagramUrl,
     }),
-    [widgetConfig.whatsappUrl, widgetConfig.instagramUrl],
+    [widgetConfig.whatsappUrl],
+  )
+
+  const visibleChannels = useMemo(
+    () => (widgetConfig.channels || []).filter((c) => c.type === 'whatsapp'),
+    [widgetConfig.channels],
   )
 
   const openPanel = () => {
@@ -374,7 +359,7 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
         <div className="np-widget-disabled">
           <img src="/logo.png" alt="NexPept" width={64} height={64} />
           <h2>Chat is currently unavailable</h2>
-          <p>Please check back later or reach us on WhatsApp / Instagram.</p>
+          <p>Please check back later or reach us on WhatsApp.</p>
         </div>
       </div>
     )
@@ -625,7 +610,7 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
                     </span>
                     <h3 className="np-section__title">Channels</h3>
                   </div>
-                  {widgetConfig.channels.map((channel) => (
+                  {visibleChannels.map((channel) => (
                     <button
                       key={channel.id}
                       type="button"
@@ -633,11 +618,7 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
                       onClick={() => openChannel(channel.type)}
                     >
                       <span className="np-channel-item__icon">
-                        {channel.type === 'whatsapp' ? (
-                          <WhatsAppIcon />
-                        ) : (
-                          <InstagramIcon />
-                        )}
+                        <WhatsAppIcon />
                       </span>
                       <span className="np-channel-item__label">{channel.label}</span>
                       <ArrowUpRight size={16} className="np-channel-item__arrow" />

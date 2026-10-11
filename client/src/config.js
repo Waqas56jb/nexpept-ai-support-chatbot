@@ -14,7 +14,6 @@ export const chatbotConfig = {
   agentName: 'NexPept Support',
   agentAvatar: '/logo.png',
   whatsappUrl: 'https://wa.me/16472606806',
-  instagramUrl: 'https://www.instagram.com/official.nexpept/',
   faqs: [
     {
       id: 'coa',
@@ -52,11 +51,6 @@ export const chatbotConfig = {
       id: 'whatsapp',
       label: 'WhatsApp',
       type: 'whatsapp',
-    },
-    {
-      id: 'instagram',
-      label: 'Instagram DM',
-      type: 'instagram',
     },
   ],
 }

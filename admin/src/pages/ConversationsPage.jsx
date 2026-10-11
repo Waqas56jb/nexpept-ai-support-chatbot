@@ -246,7 +246,6 @@ export default function ConversationsPage() {
                 <option value="all">All channels</option>
                 <option value="website">{CHANNEL_LABELS.website}</option>
                 <option value="whatsapp">{CHANNEL_LABELS.whatsapp}</option>
-                <option value="instagram">{CHANNEL_LABELS.instagram}</option>
               </select>
             </label>
           </div>

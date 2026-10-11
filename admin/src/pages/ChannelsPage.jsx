@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { getChannels, updateChannel } from '../services/channelService.js'
 import { useWorkspace } from '../context/WorkspaceContext.jsx'
 
-const ALLOWED = ['whatsapp', 'instagram']
+const ALLOWED = ['whatsapp']
 
 export default function ChannelsPage() {
   const { tick, toast } = useWorkspace()
