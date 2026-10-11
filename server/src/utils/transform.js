@@ -181,6 +181,8 @@ export function settingsRowToApi(row) {
     instagramUrl: instagram?.url || theme.instagramUrl || '',
     connectionStatus: theme.connectionStatus || whatsapp?.connectionStatus || 'link_only',
     aiEnabledDefault: theme.aiEnabledDefault !== false,
+    /** When false, website chatbot widget is hidden */
+    widgetEnabled: theme.widgetEnabled !== false,
     showFaqs: c.showFaqs !== false,
     enableHumanHandoff: c.enableHumanHandoff !== false,
     businessHours: theme.businessHours || {

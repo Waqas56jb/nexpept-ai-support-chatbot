@@ -92,6 +92,8 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
   const [handoffPending, setHandoffPending] = useState(false)
   const [faqs, setFaqs] = useState(chatbotConfig.faqs)
   const [widgetConfig, setWidgetConfig] = useState(chatbotConfig)
+  const [widgetEnabled, setWidgetEnabled] = useState(true)
+  const [settingsReady, setSettingsReady] = useState(false)
   const countryRef = useRef(null)
   const messagesEndRef = useRef(null)
   const messagesScrollRef = useRef(null)
@@ -101,39 +103,56 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
   useEffect(() => {
     let active = true
 
-    Promise.all([
-      getFaqs().catch(() => null),
-      getChatSettings().catch(() => null),
-    ]).then(([faqRows, settings]) => {
-      if (!active) return
+    async function loadSettings() {
+      try {
+        const [faqRows, settings] = await Promise.all([
+          getFaqs().catch(() => null),
+          getChatSettings().catch(() => null),
+        ])
+        if (!active) return
 
-      if (Array.isArray(faqRows) && faqRows.length) {
-        setFaqs(
-          faqRows.map((f) => ({
-            id: f.id,
-            question: f.title || f.question || '',
-            answer: f.body || f.answer || '',
-          })),
-        )
-      }
+        if (Array.isArray(faqRows) && faqRows.length) {
+          setFaqs(
+            faqRows.map((f) => ({
+              id: f.id,
+              question: f.title || f.question || '',
+              answer: f.body || f.answer || '',
+            })),
+          )
+        }
 
-      if (settings && typeof settings === 'object') {
-        setWidgetConfig((prev) => ({
-          ...prev,
-          brandName: settings.brandName ?? prev.brandName,
-          greeting: settings.greeting ?? prev.greeting,
-          headerTitle: settings.headerTitle ?? prev.headerTitle,
-          agentName: settings.agentName ?? prev.agentName,
-          // Brand logo is the product avatar end-to-end
-          agentAvatar: '/logo.png',
-          whatsappUrl: settings.whatsappUrl ?? prev.whatsappUrl,
-          instagramUrl: settings.instagramUrl ?? prev.instagramUrl,
-        }))
+        if (settings && typeof settings === 'object') {
+          setWidgetEnabled(settings.widgetEnabled !== false)
+          setWidgetConfig((prev) => ({
+            ...prev,
+            brandName: settings.brandName ?? prev.brandName,
+            greeting: settings.greeting ?? prev.greeting,
+            headerTitle: settings.headerTitle ?? prev.headerTitle,
+            agentName: settings.agentName ?? prev.agentName,
+            agentAvatar: '/logo.png',
+            whatsappUrl: settings.whatsappUrl ?? prev.whatsappUrl,
+            instagramUrl: settings.instagramUrl ?? prev.instagramUrl,
+          }))
+        }
+      } finally {
+        if (active) setSettingsReady(true)
       }
-    })
+    }
+
+    loadSettings()
+    // Pick up admin on/off changes without a full page reload
+    const timer = setInterval(() => {
+      getChatSettings()
+        .then((settings) => {
+          if (!active || !settings) return
+          setWidgetEnabled(settings.widgetEnabled !== false)
+        })
+        .catch(() => {})
+    }, 8000)
 
     return () => {
       active = false
+      clearInterval(timer)
     }
   }, [])
 
@@ -328,6 +347,24 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
   const openChannel = (type) => {
     const url = channelMap[type]
     if (url) window.open(url, '_blank', 'noopener,noreferrer')
+  }
+
+  // Admin switch OFF → hide chatbot from the website entirely
+  if (settingsReady && !widgetEnabled) {
+    if (!isPage) return null
+    return (
+      <div className="np-chat-root is-page">
+        <div className="np-widget-disabled">
+          <img src="/logo.png" alt="NexPept" width={64} height={64} />
+          <h2>Chat is currently unavailable</h2>
+          <p>Please check back later or reach us on WhatsApp / Instagram.</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!settingsReady && !isPage) {
+    return null
   }
 
   return (

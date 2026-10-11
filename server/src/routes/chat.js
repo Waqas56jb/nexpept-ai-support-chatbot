@@ -24,6 +24,7 @@ router.get('/settings', async (_req, res, next) => {
       instagramUrl: api.instagramUrl,
       showFaqs: api.showFaqs,
       enableHumanHandoff: api.enableHumanHandoff,
+      widgetEnabled: api.widgetEnabled !== false,
     })
   } catch (err) {
     next(err)
@@ -50,6 +51,14 @@ router.get('/faqs', async (_req, res, next) => {
 
 router.post('/start', async (req, res, next) => {
   try {
+    const { rows: settingsRows } = await pool.query(
+      `SELECT * FROM ${TABLES.settings} ORDER BY updated_at DESC LIMIT 1`,
+    )
+    const chatSettings = settingsRowToApi(settingsRows[0] || {})
+    if (chatSettings.widgetEnabled === false) {
+      throw badRequest('Chatbot is currently disabled')
+    }
+
     const name = String(req.body?.name || '').trim()
     const email = String(req.body?.email || '').trim().toLowerCase()
     const phone = String(req.body?.phone || '').trim()

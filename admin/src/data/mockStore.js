@@ -21,6 +21,7 @@ function defaultSettings() {
     instagramUrl: 'https://www.instagram.com/official.nexpept/',
     connectionStatus: 'link_only',
     aiEnabledDefault: true,
+    widgetEnabled: true,
     businessHours: { timezone: 'America/Toronto', start: '09:00', end: '17:00' },
   }
 }

@@ -115,6 +115,7 @@ async function main() {
     const theme = {
       brandName: 'NexPept',
       aiEnabledDefault: true,
+      widgetEnabled: true,
       businessHours: { timezone: 'America/Toronto', start: '09:00', end: '17:00' },
       whatsappUrl: 'https://wa.me/16472606806',
       instagramUrl: 'https://www.instagram.com/official.nexpept/',

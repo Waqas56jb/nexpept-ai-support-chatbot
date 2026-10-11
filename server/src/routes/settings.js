@@ -30,6 +30,7 @@ router.patch('/chatbot', async (req, res, next) => {
     const themePatch = { ...(row?.theme || {}) }
     if (body.brandName !== undefined) themePatch.brandName = body.brandName
     if (body.aiEnabledDefault !== undefined) themePatch.aiEnabledDefault = body.aiEnabledDefault
+    if (body.widgetEnabled !== undefined) themePatch.widgetEnabled = Boolean(body.widgetEnabled)
     if (body.businessHours !== undefined) themePatch.businessHours = body.businessHours
     if (body.connectionStatus !== undefined) themePatch.connectionStatus = body.connectionStatus
     if (body.whatsappUrl !== undefined) themePatch.whatsappUrl = body.whatsappUrl
