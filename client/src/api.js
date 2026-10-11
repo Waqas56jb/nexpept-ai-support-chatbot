@@ -14,6 +14,8 @@ async function chatFetch(path, init = {}) {
   if (!headers.has('Content-Type') && init.body && typeof init.body === 'string') {
     headers.set('Content-Type', 'application/json')
   }
+  headers.set('Cache-Control', 'no-cache')
+  headers.set('Pragma', 'no-cache')
 
   const controller = new AbortController()
   const timeoutMs = 45000
@@ -23,10 +25,16 @@ async function chatFetch(path, init = {}) {
     const response = await fetch(url, {
       ...init,
       headers,
+      cache: 'no-store',
       signal: init.signal || controller.signal,
     })
     const contentType = response.headers.get('content-type') || ''
     const isJson = contentType.includes('application/json')
+
+    // 304 with empty body must never wipe chat state
+    if (response.status === 304) {
+      throw new Error('Stale cache response')
+    }
 
     if (!response.ok) {
       if (isJson) {
@@ -75,7 +83,10 @@ export async function requestHandoff(conversationId, reason) {
 }
 
 export async function getChatMessages(conversationId) {
-  return chatFetch(`/chat/${encodeURIComponent(conversationId)}/messages`)
+  const bust = `_=${Date.now()}`
+  return chatFetch(
+    `/chat/${encodeURIComponent(conversationId)}/messages?${bust}`,
+  )
 }
 
 export async function getFaqs() {
@@ -86,15 +97,32 @@ export async function getChatSettings() {
   return chatFetch('/chat/settings')
 }
 
-/** @param {{ id: string, senderType?: string, content?: string }} msg */
+/** @param {{ id: string, senderType?: string, content?: string, createdAt?: string }} msg */
 export function mapApiMessageToUi(msg) {
   const sender = msg.senderType
   let role = 'bot'
   if (sender === 'customer') role = 'user'
-  else if (sender === 'agent') role = 'bot'
+  else if (sender === 'agent') role = 'agent'
+  else if (sender === 'ai') role = 'bot'
   return {
     id: msg.id,
     role,
-    text: msg.content,
+    text: String(msg.content || ''),
+    createdAt: msg.createdAt || null,
+    senderType: sender || (role === 'user' ? 'customer' : 'ai'),
   }
+}
+
+/** Merge thread by id, preserving order (server order preferred when full list). */
+export function mergeMessageLists(current, incoming) {
+  const map = new Map()
+  for (const m of current || []) {
+    if (m?.id) map.set(m.id, m)
+  }
+  for (const m of incoming || []) {
+    if (m?.id) map.set(m.id, m)
+  }
+  const pending = (current || []).filter((m) => String(m.id).startsWith('u-pending-'))
+  const serverish = [...map.values()].filter((m) => !String(m.id).startsWith('u-pending-'))
+  return [...serverish, ...pending]
 }

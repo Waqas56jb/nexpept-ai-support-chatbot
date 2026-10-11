@@ -47,9 +47,10 @@ export async function requestHandoff(conversationId, reason) {
       )
       handoff = rows[0]
 
+      // Keep AI assisting until an agent claims — handoff only notifies the team
       await client.query(
         `UPDATE ${TABLES.conversations}
-         SET status = 'handoff_pending', ai_enabled = false, handoff_requested_at = now(), updated_at = now()
+         SET status = 'handoff_pending', handoff_requested_at = now(), updated_at = now()
          WHERE id = $1`,
         [conversationId],
       )
@@ -71,14 +72,12 @@ export async function requestHandoff(conversationId, reason) {
         ],
       )
     } else if (conv.status !== 'handoff_pending' && conv.status !== 'assigned') {
+      const nextStatus = handoff.status === 'claimed' ? 'assigned' : 'handoff_pending'
       await client.query(
         `UPDATE ${TABLES.conversations}
-         SET status = $2, ai_enabled = false, updated_at = now()
+         SET status = $2, ai_enabled = $3, updated_at = now()
          WHERE id = $1`,
-        [
-          conversationId,
-          handoff.status === 'claimed' ? 'assigned' : 'handoff_pending',
-        ],
+        [conversationId, nextStatus, nextStatus !== 'assigned'],
       )
     }
 

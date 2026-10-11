@@ -176,25 +176,34 @@ router.post('/:conversationId/message', async (req, res, next) => {
     /** @type {import('../utils/transform.js').mapMessage[]} */
     const newMessages = [customerMsg]
 
-    if (isHandoffPhrase(content) || !conv.ai_enabled) {
-      if (isHandoffPhrase(content)) {
-        const handoffResult = await requestHandoff(conv.id, content)
-        const updatedConv = handoffResult.conversation
-        const reply = await insertMessage({
-          conversationId: conv.id,
-          senderType: 'ai',
-          content:
-            'Got it — a team member has been notified and will reply shortly.',
-          visibility: 'public',
-          aiGenerated: true,
-        })
-        if (reply) newMessages.push(reply)
-        return res.json({
-          messages: newMessages,
-          conversation: updatedConv,
-        })
-      }
+    if (isHandoffPhrase(content)) {
+      const handoffResult = await requestHandoff(conv.id, content)
+      const reply = await insertMessage({
+        conversationId: conv.id,
+        senderType: 'ai',
+        content:
+          'Got it — a team member has been notified. I can keep helping with product questions in the meantime, or you can wait for a human reply.',
+        visibility: 'public',
+        aiGenerated: true,
+      })
+      if (reply) newMessages.push(reply)
+      return res.json({
+        messages: newMessages,
+        conversation: handoffResult.conversation,
+      })
+    }
 
+    // Agent has claimed — acknowledge and stop generating AI answers
+    if (!conv.ai_enabled) {
+      const reply = await insertMessage({
+        conversationId: conv.id,
+        senderType: 'ai',
+        content:
+          'Thanks — a team member has this conversation and will reply here shortly.',
+        visibility: 'public',
+        aiGenerated: true,
+      })
+      if (reply) newMessages.push(reply)
       return res.json({
         messages: newMessages,
         conversation: mapConversation(

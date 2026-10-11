@@ -23,6 +23,16 @@ const port = Number(process.env.PORT) || 4000
 app.use(cors())
 app.use(express.json({ limit: '1mb' }))
 
+/** Chat polling must never be cached (browsers were getting 304 and wiping UI). */
+app.use('/api/chat', (_req, res, next) => {
+  res.set({
+    'Cache-Control': 'no-store, no-cache, must-revalidate, private',
+    Pragma: 'no-cache',
+    Expires: '0',
+  })
+  next()
+})
+
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, service: 'nexpept-support-api', timestamp: new Date().toISOString() })
 })

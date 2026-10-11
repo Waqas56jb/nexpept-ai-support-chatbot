@@ -18,10 +18,20 @@ import {
   getChatSettings,
   getFaqs,
   mapApiMessageToUi,
+  mergeMessageLists,
   sendChatMessage,
   startChat as apiStartChat,
 } from '../../api'
 import './ChatWidget.css'
+
+function formatMsgTime(iso) {
+  if (!iso) return ''
+  try {
+    return new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  } catch {
+    return ''
+  }
+}
 
 const emailOk = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
 
@@ -80,10 +90,12 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
   const [draft, setDraft] = useState('')
   const [messages, setMessages] = useState([])
   const [sending, setSending] = useState(false)
+  const [handoffPending, setHandoffPending] = useState(false)
   const [faqs, setFaqs] = useState(chatbotConfig.faqs)
   const [widgetConfig, setWidgetConfig] = useState(chatbotConfig)
   const countryRef = useRef(null)
   const messagesEndRef = useRef(null)
+  const messagesScrollRef = useRef(null)
   const pollSeqRef = useRef(0)
   const sendingRef = useRef(false)
 
@@ -125,26 +137,47 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
     }
   }, [])
 
-  const refreshMessages = useCallback(async (id) => {
-    if (!id || sendingRef.current) return
-    const seq = ++pollSeqRef.current
-    const data = await getChatMessages(id)
-    if (seq !== pollSeqRef.current || sendingRef.current) return
-    const list = Array.isArray(data?.messages) ? data.messages : []
-    setMessages(list.map(mapApiMessageToUi))
+  const applyServerMessages = useCallback((rawList) => {
+    const list = Array.isArray(rawList) ? rawList.map(mapApiMessageToUi) : []
+    if (!list.length) return
+    setMessages((prev) => {
+      const withoutPending = prev.filter((m) => !String(m.id).startsWith('u-pending-'))
+      // Never shrink the thread from a short/stale poll
+      if (list.length < withoutPending.length) {
+        return mergeMessageLists(withoutPending, list)
+      }
+      return list
+    })
   }, [])
+
+  const refreshMessages = useCallback(
+    async (id) => {
+      if (!id || sendingRef.current) return
+      const seq = ++pollSeqRef.current
+      try {
+        const data = await getChatMessages(id)
+        if (seq !== pollSeqRef.current || sendingRef.current) return
+        applyServerMessages(data?.messages)
+      } catch {
+        /* keep current UI on poll errors / 304 */
+      }
+    },
+    [applyServerMessages],
+  )
 
   useEffect(() => {
     if (!started || !conversationId) return
-    refreshMessages(conversationId).catch(() => {})
+    refreshMessages(conversationId)
     const timer = setInterval(() => {
-      refreshMessages(conversationId).catch(() => {})
-    }, 5000)
+      refreshMessages(conversationId)
+    }, 4000)
     return () => clearInterval(timer)
   }, [started, conversationId, refreshMessages])
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const el = messagesScrollRef.current
+    if (!el) return
+    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
   }, [messages, sending])
 
   const filteredCountries = useMemo(() => {
@@ -231,47 +264,52 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
     if (!trimmed || !conversationId || sendingRef.current) return
 
     const pendingId = `u-pending-${Date.now()}`
-    setMessages((prev) => [...prev, { id: pendingId, role: 'user', text: trimmed }])
+    const isHandoff = trimmed.toLowerCase().includes('speak with team member')
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: pendingId,
+        role: 'user',
+        text: trimmed,
+        createdAt: new Date().toISOString(),
+        senderType: 'customer',
+      },
+    ])
     setDraft('')
     sendingRef.current = true
     setSending(true)
-    // Invalidate in-flight polls so they cannot wipe the AI reply
     pollSeqRef.current += 1
 
     try {
-      // Always POST /message — server handles handoff phrases + AI reply
       const result = await sendChatMessage(conversationId, trimmed)
+      const status = result?.conversation?.status
+      if (status === 'handoff_pending' || isHandoff) setHandoffPending(true)
 
-      const fromSend = Array.isArray(result?.messages) ? result.messages : []
-      if (fromSend.length) {
-        setMessages((prev) => {
-          const withoutPending = prev.filter((m) => m.id !== pendingId)
-          const existingIds = new Set(withoutPending.map((m) => m.id))
-          const mapped = fromSend.map(mapApiMessageToUi)
-          const merged = [...withoutPending]
-          for (const msg of mapped) {
-            if (!existingIds.has(msg.id)) {
-              merged.push(msg)
-              existingIds.add(msg.id)
-            }
-          }
-          return merged
-        })
-      }
+      const fromSend = Array.isArray(result?.messages)
+        ? result.messages.map(mapApiMessageToUi)
+        : []
 
-      // Authoritative sync after send completes
-      const data = await getChatMessages(conversationId)
-      const list = Array.isArray(data?.messages) ? data.messages : []
-      if (list.length) {
-        setMessages(list.map(mapApiMessageToUi))
+      setMessages((prev) => {
+        const withoutPending = prev.filter((m) => m.id !== pendingId)
+        return mergeMessageLists(withoutPending, fromSend)
+      })
+
+      // Best-effort full sync — never overwrite with empty/shorter cache
+      try {
+        const data = await getChatMessages(conversationId)
+        applyServerMessages(data?.messages)
+      } catch {
+        /* POST merge already applied */
       }
     } catch {
       setMessages((prev) => [
-        ...prev,
+        ...prev.filter((m) => m.id !== pendingId),
         {
           id: `err-${Date.now()}`,
           role: 'bot',
           text: 'Something went wrong sending your message. Please try again.',
+          senderType: 'ai',
         },
       ])
     } finally {
@@ -553,28 +591,80 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
               </>
             ) : (
               <div className="np-chat-view">
-                <div className="np-messages">
-                  {messages.map((msg) => (
-                    <div key={msg.id} className={`np-msg ${msg.role}`}>
-                      {msg.text}
-                    </div>
-                  ))}
+                {handoffPending && (
+                  <div className="np-status-banner" role="status">
+                    <span className="np-status-banner__pulse" />
+                    Team notified · AI can still help while you wait
+                  </div>
+                )}
+
+                <div className="np-messages" ref={messagesScrollRef}>
+                  {messages.map((msg) => {
+                    const isUser = msg.role === 'user'
+                    return (
+                      <div
+                        key={msg.id}
+                        className={`np-msg-row ${isUser ? 'is-user' : 'is-bot'}`}
+                      >
+                        {!isUser && (
+                          <img
+                            className="np-msg-avatar"
+                            src={widgetConfig.agentAvatar}
+                            alt=""
+                          />
+                        )}
+                        <div className="np-msg-stack">
+                          {!isUser && (
+                            <span className="np-msg-label">
+                              {msg.role === 'agent'
+                                ? 'Team member'
+                                : widgetConfig.agentName || 'NexPept Support'}
+                            </span>
+                          )}
+                          <div className={`np-msg ${msg.role === 'user' ? 'user' : 'bot'}`}>
+                            {msg.text}
+                          </div>
+                          {msg.createdAt && (
+                            <span className="np-msg-time">{formatMsgTime(msg.createdAt)}</span>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+
                   {sending && (
-                    <div className="np-msg bot np-msg--typing" aria-live="polite">
-                      <span />
-                      <span />
-                      <span />
+                    <div className="np-msg-row is-bot" aria-live="polite">
+                      <img
+                        className="np-msg-avatar"
+                        src={widgetConfig.agentAvatar}
+                        alt=""
+                      />
+                      <div className="np-msg-stack">
+                        <span className="np-msg-label">
+                          {widgetConfig.agentName || 'NexPept Support'}
+                        </span>
+                        <div className="np-msg bot np-msg--typing">
+                          <span />
+                          <span />
+                          <span />
+                        </div>
+                      </div>
                     </div>
                   )}
                   <div ref={messagesEndRef} />
+                </div>
+
+                <div className="np-chat-footer">
                   <div className="np-quick">
-                    <button
-                      type="button"
-                      disabled={sending}
-                      onClick={() => pushUser('Speak with team member')}
-                    >
-                      Speak with team member
-                    </button>
+                    {!handoffPending && (
+                      <button
+                        type="button"
+                        disabled={sending}
+                        onClick={() => pushUser('Speak with team member')}
+                      >
+                        Speak with team member
+                      </button>
+                    )}
                     {faqs.slice(0, 2).map((faq) => (
                       <button
                         key={faq.id}
@@ -586,24 +676,31 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
                       </button>
                     ))}
                   </div>
+                  <form
+                    className="np-composer"
+                    onSubmit={(e) => {
+                      e.preventDefault()
+                      pushUser(draft)
+                    }}
+                  >
+                    <input
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      placeholder={
+                        sending ? 'Waiting for reply…' : 'Type your message...'
+                      }
+                      disabled={sending}
+                      autoComplete="off"
+                    />
+                    <button
+                      type="submit"
+                      aria-label="Send"
+                      disabled={sending || !draft.trim()}
+                    >
+                      <Send size={16} />
+                    </button>
+                  </form>
                 </div>
-                <form
-                  className="np-composer"
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    pushUser(draft)
-                  }}
-                >
-                  <input
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    placeholder="Type your message..."
-                    disabled={sending}
-                  />
-                  <button type="submit" aria-label="Send" disabled={sending}>
-                    <Send size={16} />
-                  </button>
-                </form>
               </div>
             )}
           </div>
