@@ -1,0 +1,25 @@
+{
+  "name": "nexpept-support-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "NexPept AI support chatbot API (Express + Supabase/Postgres)",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed": "node scripts/seed.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "openai": "^4.86.1",
+    "pg": "^8.13.3"
+  }
+}
