@@ -132,11 +132,14 @@ export async function generateReply(userText, options = {}) {
         ...toChatMessages(history, userText),
       ]
 
-      const completion = await openai.chat.completions.create({
-        model: process.env.OPENAI_MODEL || AI_MODEL_DEFAULT,
-        messages,
-        ...AI_GENERATION_DEFAULTS,
-      })
+      const completion = await openai.chat.completions.create(
+        {
+          model: process.env.OPENAI_MODEL || AI_MODEL_DEFAULT,
+          messages,
+          ...AI_GENERATION_DEFAULTS,
+        },
+        { timeout: 25000 },
+      )
 
       const text = completion.choices[0]?.message?.content?.trim()
       if (text) return text

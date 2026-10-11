@@ -15,25 +15,42 @@ async function chatFetch(path, init = {}) {
     headers.set('Content-Type', 'application/json')
   }
 
-  const response = await fetch(url, { ...init, headers })
-  const contentType = response.headers.get('content-type') || ''
-  const isJson = contentType.includes('application/json')
+  const controller = new AbortController()
+  const timeoutMs = 45000
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
 
-  if (!response.ok) {
-    if (isJson) {
-      const data = await response.json().catch(() => ({}))
-      const message =
-        typeof data?.error === 'string' && data.error
-          ? data.error
-          : `Request failed (${response.status})`
-      throw new Error(message)
+  try {
+    const response = await fetch(url, {
+      ...init,
+      headers,
+      signal: init.signal || controller.signal,
+    })
+    const contentType = response.headers.get('content-type') || ''
+    const isJson = contentType.includes('application/json')
+
+    if (!response.ok) {
+      if (isJson) {
+        const data = await response.json().catch(() => ({}))
+        const message =
+          typeof data?.error === 'string' && data.error
+            ? data.error
+            : `Request failed (${response.status})`
+        throw new Error(message)
+      }
+      const text = await response.text().catch(() => '')
+      throw new Error(text || `Request failed (${response.status})`)
     }
-    const text = await response.text().catch(() => '')
-    throw new Error(text || `Request failed (${response.status})`)
-  }
 
-  if (isJson) return response.json()
-  return response.text()
+    if (isJson) return response.json()
+    return response.text()
+  } catch (err) {
+    if (err?.name === 'AbortError') {
+      throw new Error('Request timed out. Please try again.')
+    }
+    throw err
+  } finally {
+    clearTimeout(timer)
+  }
 }
 
 export async function startChat({ name, email, phone, countryCode }) {
