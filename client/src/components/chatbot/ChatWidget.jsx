@@ -148,13 +148,30 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
           setWidgetEnabled(settings.widgetEnabled !== false)
         })
         .catch(() => {})
-    }, 8000)
+    }, 3000)
 
     return () => {
       active = false
       clearInterval(timer)
     }
   }, [])
+
+  // Tell WordPress/parent embed iframe to hide or show with admin switch
+  useEffect(() => {
+    if (!settingsReady) return
+    if (typeof window === 'undefined') return
+    const payload = {
+      source: 'nexpept-chat',
+      type: 'visibility',
+      enabled: widgetEnabled !== false,
+    }
+    try {
+      window.parent?.postMessage(payload, '*')
+      window.postMessage(payload, '*')
+    } catch {
+      /* ignore */
+    }
+  }, [widgetEnabled, settingsReady])
 
   const applyServerMessages = useCallback((rawList) => {
     const list = Array.isArray(rawList) ? rawList.map(mapApiMessageToUi) : []

@@ -94,7 +94,8 @@ export async function getFaqs() {
 }
 
 export async function getChatSettings() {
-  return chatFetch('/chat/settings')
+  // Cache-bust so admin ON/OFF is reflected quickly on the website
+  return chatFetch(`/chat/settings?_=${Date.now()}`)
 }
 
 /** @param {{ id: string, senderType?: string, content?: string, createdAt?: string }} msg */

@@ -20,19 +20,21 @@ export default function ChatbotSettingsPage() {
 
   async function handleWidgetToggle() {
     if (toggling) return
-    const next = form.widgetEnabled === false
+    const currentlyOn = form.widgetEnabled !== false
+    const next = !currentlyOn
     setToggling(true)
     setForm((prev) => ({ ...prev, widgetEnabled: next }))
     try {
       const updated = await updateSettings({ widgetEnabled: next })
-      setForm((prev) => ({ ...prev, ...updated, widgetEnabled: next }))
+      const savedOn = updated?.widgetEnabled !== false
+      setForm((prev) => ({ ...prev, ...updated, widgetEnabled: savedOn }))
       toast.success(
-        next
+        savedOn
           ? 'Chatbot is ON — visible on the website'
           : 'Chatbot is OFF — hidden from the website',
       )
     } catch (err) {
-      setForm((prev) => ({ ...prev, widgetEnabled: !next }))
+      setForm((prev) => ({ ...prev, widgetEnabled: currentlyOn }))
       toast.error(err?.message || 'Could not update chatbot visibility')
     } finally {
       setToggling(false)
