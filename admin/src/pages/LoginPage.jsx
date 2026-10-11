@@ -33,8 +33,8 @@ export default function LoginPage() {
   return (
     <div className="login-page">
       <div className="login-card">
-        <div className="admin-brand__mark" style={{ background: 'var(--np-navy)', color: '#fff' }}>
-          N
+        <div className="admin-brand__mark login-brand-mark">
+          <img src="/logo.png" alt="NexPept" />
         </div>
         <h1>Sign in</h1>
         <p>NexPept support admin — demo workspace with mock data.</p>

@@ -6,7 +6,6 @@ import {
   Expand,
   Grid2x2,
   HelpCircle,
-  MessageCircle,
   Send,
   Shrink,
   X,
@@ -125,7 +124,8 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
           greeting: settings.greeting ?? prev.greeting,
           headerTitle: settings.headerTitle ?? prev.headerTitle,
           agentName: settings.agentName ?? prev.agentName,
-          agentAvatar: settings.agentAvatar ?? prev.agentAvatar,
+          // Brand logo is the product avatar end-to-end
+          agentAvatar: '/logo.png',
           whatsappUrl: settings.whatsappUrl ?? prev.whatsappUrl,
           instagramUrl: settings.instagramUrl ?? prev.instagramUrl,
         }))
@@ -364,7 +364,7 @@ export default function ChatWidget({ mode = 'widget', onExpandedChange }) {
           aria-label="Open chat"
           onClick={openPanel}
         >
-          <MessageCircle strokeWidth={2.2} />
+          <img src="/logo.png" alt="" className="np-launcher__logo" />
         </button>
       )}
 

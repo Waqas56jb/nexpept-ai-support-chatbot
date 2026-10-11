@@ -11,7 +11,7 @@
 
 .admin-sidebar {
   --sb-pad-x: 12px;
-  background: linear-gradient(180deg, #123356 0%, var(--np-navy) 42%, #0b1f38 100%);
+  background: linear-gradient(180deg, #1a6de0 0%, var(--np-navy) 42%, var(--np-navy-deep) 100%);
   color: #fff;
   padding: 14px var(--sb-pad-x) 12px;
   position: sticky;
@@ -66,12 +66,30 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.14);
+  background: #fff;
   display: grid;
   place-items: center;
   font-family: var(--font-display);
   font-weight: 800;
   flex-shrink: 0;
+  overflow: hidden;
+  padding: 3px;
+  box-sizing: border-box;
+}
+
+.admin-brand__mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.login-brand-mark {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  margin-bottom: 8px;
+  padding: 6px;
 }
 
 .admin-brand__text {
@@ -427,8 +445,8 @@
 
 .badge.open,
 .badge.ai_handling {
-  background: #e8eef6;
-  color: var(--np-navy);
+  background: var(--np-brand-soft);
+  color: var(--np-navy-deep);
 }
 
 .badge.handoff_pending {
@@ -438,7 +456,7 @@
 
 .badge.assigned,
 .badge.waiting_for_customer {
-  background: #eaf2ff;
+  background: var(--np-brand-tint, #d6e6fb);
   color: #1d4f91;
 }
 
@@ -738,7 +756,7 @@ table.data-table th {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: linear-gradient(145deg, #15375f, #0f2a4a);
+  background: linear-gradient(145deg, var(--np-navy-soft), var(--np-navy-deep));
   color: #fff;
   display: grid;
   place-items: center;
@@ -1187,7 +1205,13 @@ table.data-table th {
 }
 
 .preview-widget {
-  background: linear-gradient(180deg, #000 0%, #000 18%, #f4f4f7 40%, #f4f4f7 100%);
+  background: linear-gradient(
+    180deg,
+    var(--np-navy) 0%,
+    var(--np-navy) 18%,
+    #f3f6fb 40%,
+    #f3f6fb 100%
+  );
   border-radius: 22px;
   padding: 14px;
   color: #fff;

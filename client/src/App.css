@@ -3,7 +3,9 @@
   display: grid;
   place-items: center;
   padding: 24px 16px;
-  background: #ffffff;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(10, 90, 207, 0.12), transparent),
+    #ffffff;
 }
 
 .demo-stage {

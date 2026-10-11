@@ -12,8 +12,7 @@ export const chatbotConfig = {
   greeting: 'Hey! How can we assist you today?',
   headerTitle: 'Our team is here for you',
   agentName: 'NexPept Support',
-  agentAvatar:
-    'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=200&h=200&fit=crop&crop=faces',
+  agentAvatar: '/logo.png',
   whatsappUrl: 'https://wa.me/16472606806',
   instagramUrl: 'https://www.instagram.com/official.nexpept/',
   faqs: [

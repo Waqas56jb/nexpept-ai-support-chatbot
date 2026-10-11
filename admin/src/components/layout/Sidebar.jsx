@@ -90,7 +90,9 @@ export default function Sidebar({ mobileOpen, collapsed, onClose, onToggleCollap
       className={`admin-sidebar${mobileOpen ? ' open' : ''}${collapsed ? ' is-collapsed' : ''}`}
     >
       <div className="admin-brand">
-        <div className="admin-brand__mark">N</div>
+        <div className="admin-brand__mark">
+          <img src="/logo.png" alt="NexPept" />
+        </div>
         <div className="admin-brand__text">
           <span className="admin-brand__name">NexPept</span>
           <span className="admin-brand__sub">Admin workspace</span>

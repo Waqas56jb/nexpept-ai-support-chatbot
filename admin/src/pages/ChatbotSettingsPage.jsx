@@ -99,11 +99,7 @@ export default function ChatbotSettingsPage() {
           <div style={{ fontWeight: 700, fontSize: 18, marginTop: 4 }}>{form.headerTitle}</div>
           <div className="preview-widget__card">
             <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 10 }}>
-              {form.agentAvatar ? (
-                <img src={form.agentAvatar} alt="" className="avatar" />
-              ) : (
-                <span className="avatar">NP</span>
-              )}
+              <img src="/logo.png" alt="" className="avatar" style={{ objectFit: 'contain', background: '#fff' }} />
               <div>
                 <strong>{form.agentName}</strong>
                 <div style={{ fontSize: 12, color: 'var(--np-muted)' }}>Typically replies in minutes</div>
@@ -111,7 +107,7 @@ export default function ChatbotSettingsPage() {
             </div>
             <div
               style={{
-                background: '#f0f3f7',
+                background: 'var(--np-brand-soft, #e8f1fc)',
                 borderRadius: 12,
                 padding: 10,
                 fontSize: 14,
