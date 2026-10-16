@@ -94,7 +94,7 @@ export default function ChatbotSettingsPage() {
             footer.php, or a custom HTML block / WPCode snippet).
           </p>
           <pre className="embed-code" tabIndex={0}>
-            {`<script src="https://nexpept-ai-support-chatbot.vercel.app/embed.js" async></script>`}
+            {`<script src="https://nexpept-ai-support-chatbot-mu.vercel.app/embed.js" async></script>`}
           </pre>
           <button
             type="button"
@@ -102,7 +102,7 @@ export default function ChatbotSettingsPage() {
             style={{ marginTop: 10 }}
             onClick={async () => {
               const code =
-                '<script src="https://nexpept-ai-support-chatbot.vercel.app/embed.js" async></script>'
+                '<script src="https://nexpept-ai-support-chatbot-mu.vercel.app/embed.js" async></script>'
               try {
                 await navigator.clipboard.writeText(code)
                 toast.success('Embed script copied')

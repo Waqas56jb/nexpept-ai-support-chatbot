@@ -2,9 +2,9 @@
 
 React admin panel for the NexPept AI support chatbot.
 
-**Live:** [nexpept-ai-support-chatbot-admin.vercel.app](https://nexpept-ai-support-chatbot-admin.vercel.app/)
+**Live:** [nexpept-ai-support-chatbot-admin-two.vercel.app](https://nexpept-ai-support-chatbot-admin-two.vercel.app/)
 
-API is hardcoded to `https://nexpept-ai-support-chatbot-server.vercel.app/api` (no `.env` needed).
+API is hardcoded to `https://nexpept-ai-support-chatbot-server-two.vercel.app/api` (no `.env` needed).
 
 ## Run locally
 
@@ -25,9 +25,9 @@ npm run dev
 
 | App    | URL |
 | ------ | --- |
-| Admin  | https://nexpept-ai-support-chatbot-admin.vercel.app |
-| Client | https://nexpept-ai-support-chatbot.vercel.app |
-| Server | https://nexpept-ai-support-chatbot-server.vercel.app |
+| Admin  | https://nexpept-ai-support-chatbot-admin-two.vercel.app |
+| Client | https://nexpept-ai-support-chatbot-mu.vercel.app |
+| Server | https://nexpept-ai-support-chatbot-server-two.vercel.app |
 
 ## Build
 

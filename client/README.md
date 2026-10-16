@@ -2,9 +2,9 @@
 
 Customer chat widget UI for NexPept support.
 
-**Live:** [nexpept-ai-support-chatbot.vercel.app](https://nexpept-ai-support-chatbot.vercel.app/)
+**Live:** [nexpept-ai-support-chatbot-mu.vercel.app](https://nexpept-ai-support-chatbot-mu.vercel.app/)
 
-API is hardcoded to `https://nexpept-ai-support-chatbot-server.vercel.app/api` (no `.env` needed).
+API is hardcoded to `https://nexpept-ai-support-chatbot-server-two.vercel.app/api` (no `.env` needed).
 
 ## Run locally
 
@@ -18,9 +18,9 @@ npm run dev
 
 | App    | URL |
 | ------ | --- |
-| Client | https://nexpept-ai-support-chatbot.vercel.app |
-| Admin  | https://nexpept-ai-support-chatbot-admin.vercel.app |
-| Server | https://nexpept-ai-support-chatbot-server.vercel.app |
+| Client | https://nexpept-ai-support-chatbot-mu.vercel.app |
+| Admin  | https://nexpept-ai-support-chatbot-admin-two.vercel.app |
+| Server | https://nexpept-ai-support-chatbot-server-two.vercel.app |
 
 ## Build
 

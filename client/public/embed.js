@@ -1,14 +1,14 @@
 /**
  * NexPept Chatbot — WordPress / any-site embed loader
  *
- * <script src="https://nexpept-ai-support-chatbot.vercel.app/embed.js" async></script>
+ * <script src="https://nexpept-ai-support-chatbot-mu.vercel.app/embed.js" async></script>
  */
 ;(function () {
   if (window.__NEXPEPT_CHAT_LOADED__) return
   window.__NEXPEPT_CHAT_LOADED__ = true
 
-  var ORIGIN = 'https://nexpept-ai-support-chatbot.vercel.app'
-  var API = 'https://nexpept-ai-support-chatbot-server.vercel.app/api'
+  var ORIGIN = 'https://nexpept-ai-support-chatbot-mu.vercel.app'
+  var API = 'https://nexpept-ai-support-chatbot-server-two.vercel.app/api'
   var script = document.currentScript
   if (script && script.src) {
     try {

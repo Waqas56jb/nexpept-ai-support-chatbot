@@ -1,11 +1,11 @@
 /** Production API — hardcoded (no Vite .env required). */
 export const API_BASE_URL =
-  'https://nexpept-ai-support-chatbot-server.vercel.app/api'
+  'https://nexpept-ai-support-chatbot-server-two.vercel.app/api'
 
 export const APP_URLS = {
-  admin: 'https://nexpept-ai-support-chatbot-admin.vercel.app',
-  client: 'https://nexpept-ai-support-chatbot.vercel.app',
-  server: 'https://nexpept-ai-support-chatbot-server.vercel.app',
+  admin: 'https://nexpept-ai-support-chatbot-admin-two.vercel.app',
+  client: 'https://nexpept-ai-support-chatbot-mu.vercel.app',
+  server: 'https://nexpept-ai-support-chatbot-server-two.vercel.app',
 }
 
 /** Always use the live API (mock store disabled). */

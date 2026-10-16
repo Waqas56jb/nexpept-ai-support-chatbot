@@ -1,8 +1,8 @@
 /** Deployed app URLs (hardcoded — no .env). */
 export const APP_URLS = {
-  admin: 'https://nexpept-ai-support-chatbot-admin.vercel.app',
-  client: 'https://nexpept-ai-support-chatbot.vercel.app',
-  server: 'https://nexpept-ai-support-chatbot-server.vercel.app',
+  admin: 'https://nexpept-ai-support-chatbot-admin-two.vercel.app',
+  client: 'https://nexpept-ai-support-chatbot-mu.vercel.app',
+  server: 'https://nexpept-ai-support-chatbot-server-two.vercel.app',
 }
 
 /** Static widget defaults; live copy comes from GET /chat/settings and /chat/faqs when the API is up. */
